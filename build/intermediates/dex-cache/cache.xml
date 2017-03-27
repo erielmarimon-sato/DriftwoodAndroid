@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/Users/Eriel.Marimon/github/android-sgs/DriftwoodSoccer/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="642c612801388bccbe32d62ab63336717c2ca2e8">
+        <dex dex="/Users/Eriel.Marimon/github/android-sgs/DriftwoodSoccer/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_734e2bfd318752ac07f2664f0c46ae64343d6775/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/Eriel.Marimon/github/android-sgs/DriftwoodSoccer/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="c82741bc129dd5f99f11a4ab8666ae24262053b6">
+        <dex dex="/Users/Eriel.Marimon/github/android-sgs/DriftwoodSoccer/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_b2c4ac39b3b2089ebfe684f8d8691a3e30460561/classes.dex" />
+    </item>
+
+</items>
