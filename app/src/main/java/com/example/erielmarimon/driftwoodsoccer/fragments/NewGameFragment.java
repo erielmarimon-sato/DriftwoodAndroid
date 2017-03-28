@@ -42,8 +42,6 @@ public class NewGameFragment extends Fragment {
 
     private final String LOG_TAG = getClass().getName();
 
-    public static final String GAME_EXTRA = "Game";
-
     public static ArrayAdapter playerAdapter;
     private TextView dateEditText;
     private TextView timeEditText;
@@ -177,7 +175,7 @@ public class NewGameFragment extends Fragment {
                 Intent createGameIntent = new Intent(getContext(), GameListActivity.class);
                 Game newGame = Helper.createGameList(1)[0];
                 createGameIntent.putExtra(
-                        GAME_EXTRA, Helper.objectToJsonString(newGame));
+                        Game.GAME_EXTRA, Helper.objectToJsonString(newGame));
                 startActivity(createGameIntent);
             }
         });

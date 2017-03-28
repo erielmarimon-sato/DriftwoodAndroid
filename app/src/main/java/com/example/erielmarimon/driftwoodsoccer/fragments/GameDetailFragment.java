@@ -21,13 +21,13 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
+import com.example.erielmarimon.driftwoodsoccer.activities.GameListActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.PlayerDetailActivity;
+import com.example.erielmarimon.driftwoodsoccer.models.Game;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,11 +43,13 @@ public class GameDetailFragment extends Fragment {
     public static ArrayAdapter playerAdapter;
     private TextView dateEditText;
     private TextView timeEditText;
-    private Calendar calendar;
+    private ListView playersListView;
     private Button addPlayerButton;
+    private Button gameDeleteButton;
 
+    private Game thisGame;
 
-    private List<Player> players;
+    List<Player> players;
 
     public GameDetailFragment() {
         // Required empty public constructor
@@ -60,52 +62,71 @@ public class GameDetailFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_game_detail, container, false);
+
+        final Calendar calendar = Calendar.getInstance();
+
         dateEditText = (TextView) rootView.findViewById(R.id.date_edit_text);
         timeEditText = (TextView) rootView.findViewById(R.id.time_edit_text);
+        playersListView = (ListView) rootView.findViewById(R.id.player_list_view);
         addPlayerButton = (Button) rootView.findViewById(R.id.player_add_button);
+        gameDeleteButton = (Button) rootView.findViewById(R.id.game_delete_button);
 
-        // Use this calendar instance to help pick both date and time.
-        // Set default values on calendar for today at 8:00 pm and update date and time views
-        Date today = new Date();
-        calendar = Calendar.getInstance();
+        String jsonGameString = "";
 
-        updateTimeLabel();
-        updateDateLabel();
+
+        jsonGameString = getActivity().getIntent().getStringExtra(Game.GAME_EXTRA);
+
+        Log.v(LOG_TAG, jsonGameString);
+
+        thisGame = Helper.jsonStringToGame(jsonGameString);
+
+        Log.v(LOG_TAG, "THIS GAME : " + thisGame.toString());
+
+        players = thisGame.getPlayers();
+        playerAdapter = new ArrayAdapter<>(
+                getActivity(),
+                R.layout.list_item_player,
+                R.id.list_item_player_textview,
+                players);
+
+        Log.v(LOG_TAG, players.size()+"");
+
+        playersListView.setAdapter(playerAdapter);
+
+        dateEditText.setText(
+                new SimpleDateFormat("MM/dd/yyyy").format(thisGame.getDate()));
+        timeEditText.setText(
+                new SimpleDateFormat("HH:MM").format(thisGame.getDate()));
 
         // For date, bring up a date selector popup on edixtext click, capture the selected
         // date and update the edittext with that date string
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-                updateDateLabel();
+                calendar.set(year, month, dayOfMonth, 0, 0);
+                dateEditText.setText(new SimpleDateFormat("MM/dd/yyyy").format(calendar.getTime()));
             }
         };
 
         dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(
-                        getContext(),
-                        date,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(getContext(), date, calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
-        // For time, bring up a time selector popup on edit text click, capture the selected time
-        // and update the edittext with that time
         final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
 
-                updateTimeLabel();
+                timeEditText.setText(new SimpleDateFormat("HH:MM").format(calendar.getTime()));
             }
         };
 
@@ -114,30 +135,14 @@ public class GameDetailFragment extends Fragment {
         timeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                new TimePickerDialog(
-                        getContext(),
-                        time,
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        is24HourView).show();
+                new TimePickerDialog(getContext(), time, calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE), is24HourView).show();
             }
         });
 
-        // For player list view, get all the players in this game and load them up with an array
-        // adapter
-        players = new ArrayList<>(Arrays.asList(Helper.createPlayerList(2)));
 
-        playerAdapter = new ArrayAdapter<>(
-                getActivity(),
-                R.layout.list_item_player,
-                R.id.list_item_player_textview,
-                players);
 
-        ListView playerListView = (ListView) rootView.findViewById(R.id.player_list_view);
-        playerListView.setAdapter(playerAdapter);
-
-        playerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        playersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent playerDetailIntent = new Intent(getContext(), PlayerDetailActivity.class);
@@ -160,20 +165,41 @@ public class GameDetailFragment extends Fragment {
             }
         });
 
+        gameDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String gameId = thisGame.getId();
+                Intent deleteGameIntent = new Intent(getContext(), GameListActivity.class);
+                deleteGameIntent.putExtra(Game.GAME_ID_EXTRA, gameId);
+                startActivity(deleteGameIntent);
+            }
+        });
+//
+//
+//
+//
+//        updateTimeLabel(thisGame.getDate());
+//        updateDateLabel(thisGame.getDate());
+//
         return rootView;
     }
-
-    private void updateTimeLabel(){
-        String format = "HH:MM";
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-        timeEditText.setText(sdf.format(calendar.getTime()));
-    }
-
-    private void updateDateLabel(){
-        String format = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-
-        dateEditText.setText(sdf.format(calendar.getTime()));
-    }
+//
+//    private void updateTimeLabel(Date date){
+//        calendar.set(Calendar.HOUR_OF_DAY, date.getHours());
+//        calendar.set(Calendar.MINUTE, date.getMinutes());
+//        String format = "HH:MM";
+//        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+//        timeEditText.setText(sdf.format(calendar.getTime()));
+//    }
+//
+//    private void updateDateLabel(Date date){
+//        calendar.set(Calendar.YEAR, date.getYear());
+//        calendar.set(Calendar.MONTH, date.getMonth());
+//        calendar.set(Calendar.DAY_OF_MONTH, date.getDay());
+//        String format = "MM/dd/yy";
+//        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+//
+//        dateEditText.setText(sdf.format(calendar.getTime()));
+//    }
 
 }

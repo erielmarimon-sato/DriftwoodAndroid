@@ -10,6 +10,9 @@ import java.util.List;
  */
 
 public class Game {
+    public static final String GAME_EXTRA = "Game";
+    public static final String GAME_ID_EXTRA = "GameId";
+
     private String id;
     private Date date;
     private List<Player> teamOne;

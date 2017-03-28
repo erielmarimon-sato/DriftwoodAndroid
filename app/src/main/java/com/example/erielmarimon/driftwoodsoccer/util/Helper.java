@@ -142,6 +142,7 @@ public class Helper {
             newGame.setTeamTwo(teamTwo);
             newGame.setTeamOneScore(teamOneScore);
             newGame.setTeamTwoScore(teamTwoScore);
+            newGame.setPlayers(players);
             newGame.setmVP(mVP);
             newGame.setGameType(gameType);
 

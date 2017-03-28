@@ -46,9 +46,20 @@ public class GameListFragment extends Fragment {
 
         games = new ArrayList<>(Arrays.asList(Helper.createGameList(2)));
 
-        if(intent != null && intent.getStringExtra(NewGameFragment.GAME_EXTRA) != null){
-            Game newGame = Helper.jsonStringToGame(intent.getStringExtra(NewGameFragment.GAME_EXTRA));
-            games.add(newGame);
+        if(intent != null ){
+            if(intent.getStringExtra(Game.GAME_EXTRA) != null){
+                Game newGame = Helper.jsonStringToGame(intent.getStringExtra(Game.GAME_EXTRA));
+                games.add(newGame);
+            }else if(intent.getStringExtra(Game.GAME_ID_EXTRA) != null){
+                String idToDelete = intent.getStringExtra(Game.GAME_ID_EXTRA);
+                for(int i = 0; i < games.size(); i++){
+                    // here the adapter does not exists yet, so cant call notifyDataSetChanged()
+                    if(games.get(i).getId().equals(idToDelete)){
+                        games.remove(i);
+                        break;
+                    }
+                }
+            }
         }
 
         gameListAdapter = new ArrayAdapter(
@@ -66,7 +77,7 @@ public class GameListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent gameDetailIntent = new Intent(getContext(), GameDetailActivity.class);
                 gameDetailIntent.putExtra(
-                        Intent.EXTRA_TEXT, Helper.objectToJsonString(games.get(position)));
+                        Game.GAME_EXTRA, Helper.objectToJsonString(games.get(position)));
                 startActivity(gameDetailIntent);
             }
         });
