@@ -32,6 +32,22 @@ import java.util.List;
 
 public class Helper {
 
+    public static Game jsonStringToGame(String jsonString){
+        ObjectMapper objectMapper = new ObjectMapper();
+        Game game = null;
+
+        try{
+            game = objectMapper.readValue(jsonString, Game.class);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return game;
+    }
+
     public static Player jsonStringToPlayer(String jsonStr){
         ObjectMapper mapperObj = new ObjectMapper();
         Player player = null;

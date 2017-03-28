@@ -21,7 +21,9 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
+import com.example.erielmarimon.driftwoodsoccer.activities.GameListActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.PlayerDetailActivity;
+import com.example.erielmarimon.driftwoodsoccer.models.Game;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
@@ -40,12 +42,15 @@ public class NewGameFragment extends Fragment {
 
     private final String LOG_TAG = getClass().getName();
 
+    public static final String GAME_EXTRA = "Game";
+
     public static ArrayAdapter playerAdapter;
     private TextView dateEditText;
     private TextView timeEditText;
     private Calendar calendar;
     private Button createGameButton;
     private Button addPlayerButton;
+
     private List<Player> players;
 
     public NewGameFragment() {
@@ -153,7 +158,6 @@ public class NewGameFragment extends Fragment {
             }
         });
 
-        Log.v(LOG_TAG, "Before Click");
         // Adds a player to the player list and updates the adapter
         addPlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +171,16 @@ public class NewGameFragment extends Fragment {
             }
         });
 
+        createGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent createGameIntent = new Intent(getContext(), GameListActivity.class);
+                Game newGame = Helper.createGameList(1)[0];
+                createGameIntent.putExtra(
+                        GAME_EXTRA, Helper.objectToJsonString(newGame));
+                startActivity(createGameIntent);
+            }
+        });
         return rootView;
     }
 

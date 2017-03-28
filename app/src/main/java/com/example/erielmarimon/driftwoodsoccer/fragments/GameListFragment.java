@@ -13,8 +13,13 @@ import android.widget.ListView;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameDetailActivity;
+import com.example.erielmarimon.driftwoodsoccer.activities.NewGameActivity;
 import com.example.erielmarimon.driftwoodsoccer.models.Game;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +27,7 @@ import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 public class GameListFragment extends Fragment {
 
     private ArrayAdapter gameListAdapter;
-    private Game[] games;
+    private List<Game> games;
 
     private ListView gameListView;
 
@@ -37,7 +42,14 @@ public class GameListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_game_list, container, false);
 
-        games = Helper.createGameList(2);
+        Intent intent = getActivity().getIntent();
+
+        games = new ArrayList<>(Arrays.asList(Helper.createGameList(2)));
+
+        if(intent != null && intent.getStringExtra(NewGameFragment.GAME_EXTRA) != null){
+            Game newGame = Helper.jsonStringToGame(intent.getStringExtra(NewGameFragment.GAME_EXTRA));
+            games.add(newGame);
+        }
 
         gameListAdapter = new ArrayAdapter(
                 getContext(),
@@ -54,12 +66,11 @@ public class GameListFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent gameDetailIntent = new Intent(getContext(), GameDetailActivity.class);
                 gameDetailIntent.putExtra(
-                        Intent.EXTRA_TEXT, Helper.objectToJsonString(games[position]));
+                        Intent.EXTRA_TEXT, Helper.objectToJsonString(games.get(position)));
                 startActivity(gameDetailIntent);
             }
         });
 
         return rootView;
     }
-
 }
