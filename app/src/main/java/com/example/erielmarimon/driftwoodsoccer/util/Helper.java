@@ -99,7 +99,7 @@ public class Helper {
         for(int i = 0; i < players.length; i++){
             Player newPlayer = new Player();
 
-            newPlayer.setId(id+i);
+            newPlayer.set_id(id+i);
             newPlayer.setName(name + i);
             newPlayer.setUsername(username+i);
             newPlayer.setPassword(password+i);

@@ -9,7 +9,7 @@ import java.util.Date;
  */
 
 public class Player {
-    private String id;
+    private String _id;
     private String name;
     private String username;
     private String password;
@@ -22,12 +22,13 @@ public class Player {
     private Date lastDayPlayed;
     private boolean active;
 
-    public String getId() {
-        return id;
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String get_id(){
+        return _id;
     }
 
     public String getName() {
@@ -121,6 +122,6 @@ public class Player {
     @Override
     public String toString() {
         String format = "User: %s, Name: %s, Id: %s";
-        return StringFormatter.format(format, username, name, id);
+        return StringFormatter.format(format, username, name, _id);
     }
 }

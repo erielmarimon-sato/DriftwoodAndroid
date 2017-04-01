@@ -15,4 +15,10 @@
     <string name="player_activity_label">Player</string>
     <string name="games_activity_label">Games</string>
     <string name="game_details_activity_label">Game</string>
+    <string name="group_management_button_title">Manage Group</string>
+    <string name="search_player_dialog_message">Search players by username.</string>
+    <string name="search_title">Search</string>
+    <string name="search_cancel_button_title">Cancel</string>
+    <string name="username_search_hint">username</string>
+    <string name="search_hint">Username</string>
 </resources>

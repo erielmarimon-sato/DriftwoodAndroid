@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameListActivity;
+import com.example.erielmarimon.driftwoodsoccer.activities.GroupManagementActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.NewGameActivity;
 
 /**
@@ -22,6 +23,7 @@ public class MainActivityFragment extends Fragment {
 
     private Button newGameButton;
     private Button gameListButton;
+    private Button groupManagementButton;
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -54,6 +56,15 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
+        groupManagementButton = (Button) rootView.findViewById(R.id.group_management_button);
+
+        groupManagementButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent groupManagementIntent = new Intent(getContext(), GroupManagementActivity.class);
+                startActivity(groupManagementIntent);
+            }
+        });
         return rootView;
     }
 

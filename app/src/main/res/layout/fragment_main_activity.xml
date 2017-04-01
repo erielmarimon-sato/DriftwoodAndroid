@@ -18,4 +18,10 @@
         android:id="@+id/game_list_button"
         android:text="@string/game_list_button_title"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/group_management_button"
+        android:text="@string/group_management_button_title"/>
+
 </LinearLayout>
