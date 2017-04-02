@@ -1,17 +1,14 @@
 package com.example.erielmarimon.driftwoodsoccer.tasks;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
-import com.example.erielmarimon.driftwoodsoccer.R;
+import com.example.erielmarimon.driftwoodsoccer.activities.SearchableActivity;
 import com.example.erielmarimon.driftwoodsoccer.fragments.GroupManagementFragment;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,22 +24,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Eriel.Marimon on 3/28/17.
+ * Created by Eriel.Marimon on 4/1/17.
  */
 
-public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
+public class SearchPlayersTask extends AsyncTask<String, Void, List<Player>> {
 
     private final String LOG_TAG = getClass().getSimpleName();
 
-
     @Override
     protected List<Player> doInBackground(String... params) {
+
+        String username = params[0];
+        boolean active = params[1].equalsIgnoreCase(Boolean.TRUE.toString());
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String responseString = null;
 
         try{
-            URL getPlayersUrl = buildGetPlayersUrl();
+            URL getPlayersUrl = buildGetPlayersByUsernameUrl(username, active);
+            Log.v(LOG_TAG, getPlayersUrl.toString());
             urlConnection = initUrlConnection(getPlayersUrl);
 
             Log.v(LOG_TAG, urlConnection.toString());
@@ -105,8 +106,8 @@ public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
 
         if (players == null) return;
 
-        GroupManagementFragment.playersAdapter.clear();
-        GroupManagementFragment.playersAdapter.addAll(players);
+        SearchableActivity.searchResultAdapter.clear();
+        SearchableActivity.searchResultAdapter.addAll(players);
 
     }
 
@@ -132,9 +133,13 @@ public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
         return urlConnection;
     }
 
-    private URL buildGetPlayersUrl() throws MalformedURLException {
+    private URL buildGetPlayersByUsernameUrl(String username, boolean active) throws MalformedURLException {
         String url = Constants.DriftwoodDb.BASE_URL +
-                Constants.DriftwoodDb.PLAYERS_END_POINT;
+                Constants.DriftwoodDb.PLAYERS_END_POINT +
+                Constants.Symbols.QUERY +
+                Constants.DriftwoodDb.USERNAME_KEY + Constants.Symbols.EQUALS + username +
+                Constants.Symbols.AMPERSAND +
+                Constants.DriftwoodDb.ACTIVE_KEY + Constants.Symbols.EQUALS + active;
         return new URL(url);
     }
 }

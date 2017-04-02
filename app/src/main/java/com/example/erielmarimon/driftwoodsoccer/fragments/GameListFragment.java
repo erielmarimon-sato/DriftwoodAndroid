@@ -15,6 +15,7 @@ import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameDetailActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.NewGameActivity;
 import com.example.erielmarimon.driftwoodsoccer.models.Game;
+import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ public class GameListFragment extends Fragment {
 
         games = new ArrayList<>(Arrays.asList(Helper.createGameList(2)));
 
-        if(intent != null && intent.getStringExtra(NewGameFragment.GAME_EXTRA) != null){
-            Game newGame = Helper.jsonStringToGame(intent.getStringExtra(NewGameFragment.GAME_EXTRA));
+        if(intent != null && intent.getStringExtra(Constants.CustomIntentExtras.GAME_EXTRA) != null){
+            Game newGame = Helper.jsonStringToGame(intent.getStringExtra(Constants.CustomIntentExtras.GAME_EXTRA));
             games.add(newGame);
         }
 
