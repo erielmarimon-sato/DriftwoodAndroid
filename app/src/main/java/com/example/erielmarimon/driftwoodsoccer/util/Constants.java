@@ -10,6 +10,7 @@ public class Constants {
         public static final String BASE_URL = "http://192.168.1.12:8080/CoreServices";
 
         public static final String PLAYERS_END_POINT = "/players";
+        public static final String GROUPS_END_POINT = "/groups";
 
         public static final String WRAPER_DATA_KEY = "data";
         public static final String USERNAME_KEY = "username";
@@ -21,10 +22,13 @@ public class Constants {
         public static final String QUERY = "?";
         public static final String EQUALS = "=";
         public static final String AMPERSAND = "&";
+        public static final String SLASH = "/";
     }
 
     public static class RequestMethods{
         public static final String GET = "GET";
+        public static final String PUT = "PUT";
+
     }
 
     public class CustomIntentExtras {

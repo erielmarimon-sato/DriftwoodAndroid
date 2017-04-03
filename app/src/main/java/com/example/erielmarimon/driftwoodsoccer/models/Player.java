@@ -13,6 +13,7 @@ public class Player {
     private String name;
     private String username;
     private String password;
+    private String groupId;
     private Integer totalGoals;
     private Integer totalAssists;
     private Integer noShow;
@@ -123,5 +124,13 @@ public class Player {
     public String toString() {
         String format = "User: %s, Name: %s, Id: %s";
         return StringFormatter.format(format, username, name, _id);
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }

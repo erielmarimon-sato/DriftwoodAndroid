@@ -86,8 +86,11 @@ public class GroupManagementFragment extends Fragment {
 
         // Async. Will update ListView
         GetGroupPlayersTask getPlayersTask = new GetGroupPlayersTask();
-        getPlayersTask.execute();
+        getPlayersTask.execute("58e0443877c8194d1839fc13");
 
+
+
+//TODO: Fix the GetGroupPlayersTask
 
 
         return rootView;

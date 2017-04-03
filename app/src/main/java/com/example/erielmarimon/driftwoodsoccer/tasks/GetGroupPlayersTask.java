@@ -37,12 +37,15 @@ public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
 
     @Override
     protected List<Player> doInBackground(String... params) {
+
+        String groupId = params[0];
+
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String responseString = null;
 
         try{
-            URL getPlayersUrl = buildGetPlayersUrl();
+            URL getPlayersUrl = buildGetPlayersUrl(groupId);
             urlConnection = initUrlConnection(getPlayersUrl);
 
             Log.v(LOG_TAG, urlConnection.toString());
@@ -118,8 +121,6 @@ public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
         for (int i = 0; i < playersJsonList.length(); i++){
             JSONObject playerJson = playersJsonList.getJSONObject(i);
 
-            Log.v(LOG_TAG, playerJson.toString());
-            Log.v(LOG_TAG, "------");
             Player player = Helper.jsonStringToPlayer(playerJson.toString());
             players.add(player);
         }
@@ -132,8 +133,10 @@ public class GetGroupPlayersTask extends AsyncTask<String, Void, List<Player>> {
         return urlConnection;
     }
 
-    private URL buildGetPlayersUrl() throws MalformedURLException {
+    private URL buildGetPlayersUrl(String groupId) throws MalformedURLException {
         String url = Constants.DriftwoodDb.BASE_URL +
+                Constants.DriftwoodDb.GROUPS_END_POINT +
+                Constants.Symbols.SLASH + groupId +
                 Constants.DriftwoodDb.PLAYERS_END_POINT;
         return new URL(url);
     }
