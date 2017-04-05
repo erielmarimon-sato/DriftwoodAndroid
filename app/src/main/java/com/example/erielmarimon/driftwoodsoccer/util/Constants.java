@@ -5,6 +5,9 @@ package com.example.erielmarimon.driftwoodsoccer.util;
  */
 
 public class Constants {
+
+    public static String CURRENT_GROUP_ID = "58e0443877c8194d1839fc13";
+
     public static class DriftwoodDb{
 //        public static final String BASE_URL = "http://192.168.2.119:8080/CoreServices";
         public static final String BASE_URL = "http://192.168.1.12:8080/CoreServices";
