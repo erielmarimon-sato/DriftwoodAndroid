@@ -25,28 +25,6 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    @Test
-    public void playerToString() throws Exception {
-        Player newPlayer = new Player();
-        newPlayer.setUsername("frias19o");
-        newPlayer.setId("1234567890");
-        newPlayer.setName("eriel");
-
-        String expected = "User: frias19o, Name: eriel, Id: 1234567890";
-        assertEquals(newPlayer.toString(), expected);
-    }
-
-    @Test
-    public void gameToString() throws Exception {
-        Game newGame = new Game();
-        Date newDate = new Date();
-        newGame.setId("abcdefghij");
-        newGame.setDate(newDate);
-        newGame.setGameType("Soccer");
-
-        String expected = "Id: abcdefghij, Game: Soccer, Date: " + newDate;
-        assertEquals(newGame.toString(), expected);
-    }
 
     @Test
     public void testObjectToJsonString(){

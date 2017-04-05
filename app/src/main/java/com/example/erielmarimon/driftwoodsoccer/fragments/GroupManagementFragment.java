@@ -4,7 +4,6 @@ package com.example.erielmarimon.driftwoodsoccer.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +17,8 @@ import android.widget.Toast;
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.MainActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.PlayerDetailActivity;
-import com.example.erielmarimon.driftwoodsoccer.activities.SearchableActivity;
-import com.example.erielmarimon.driftwoodsoccer.interfaces.PlayerService;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
-import com.example.erielmarimon.driftwoodsoccer.models.net.PlayerDto;
 import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
-import com.example.erielmarimon.driftwoodsoccer.util.ApiHandler;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
@@ -44,7 +39,7 @@ public class GroupManagementFragment extends Fragment {
     private ListView playersListView;
     private Button addPlayerButton;
 
-    public static ArrayAdapter playersAdapter;
+    public ArrayAdapter playersAdapter;
 
     public static List<Player> players;
 
@@ -53,54 +48,73 @@ public class GroupManagementFragment extends Fragment {
         players = new ArrayList<>();
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_group_management, container, false);
 
-
-        playersListView = (ListView) rootView.findViewById(R.id.player_list_view);
-        addPlayerButton = (Button) rootView.findViewById(R.id.player_add_button);
+        View.OnClickListener onClickListener = createOnClickListener();
+        AdapterView.OnItemClickListener adapterOnItemClickListener = createOnItemClickListener();
 
         // init player adapter
         playersAdapter = new ArrayAdapter(
-                getContext(),
-                R.layout.list_item_player,
-                R.id.list_item_player_textview,
-                players);
+                getContext(), R.layout.list_item_player, R.id.list_item_player_textview, players);
+
+        addPlayerButton = (Button) rootView.findViewById(R.id.player_add_button);
+        addPlayerButton.setOnClickListener(onClickListener);
 
         // link playersAdapter to playersListView
+        playersListView = (ListView) rootView.findViewById(R.id.player_list_view);
         playersListView.setAdapter(playersAdapter);
-        playersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent playerDetailIntent = new Intent(getContext(), PlayerDetailActivity.class);
-                // Sending the player as a json string, will be deserialized upon arrival
-                playerDetailIntent.putExtra(
-                        Intent.EXTRA_TEXT, Helper.objectToJsonString(players.get(position)));
-                startActivity(playerDetailIntent);
-            }
-        });
-
-        // Listener
-        addPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Add player to database
-                // TODO: Add player to UI
-                Log.v(LOG_TAG, "Add player");
-
-                getActivity().onSearchRequested();
-            }
-        });
+        playersListView.setOnItemClickListener(adapterOnItemClickListener);
 
         //load players for this group
-        refreshPlayers();
+        refreshPlayers(playersAdapter);
 
         // Handle the coming intent
         Intent intent = getActivity().getIntent();
+        handleIntent(intent);
+
+        return rootView;
+    }
+
+    private AdapterView.OnItemClickListener createOnItemClickListener(){
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (parent.getId()){
+                    case R.id.player_list_view:
+                        Intent playerDetailIntent = new Intent(getContext(), PlayerDetailActivity.class);
+                        // Sending the player as a json string, will be deserialized upon arrival
+                        playerDetailIntent.putExtra(
+                                Intent.EXTRA_TEXT, Helper.objectToJsonString(players.get(position)));
+                        startActivity(playerDetailIntent);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener createOnClickListener(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()){
+                    case R.id.player_add_button:
+                        getActivity().onSearchRequested();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    private void handleIntent(Intent intent){
         if(intent != null){
             String action = intent.getStringExtra(Constants.CustomIntentExtras.HEADER_ACTION);
             if(action != null){
@@ -119,15 +133,9 @@ public class GroupManagementFragment extends Fragment {
                 }
             }
         }
-
-
-//TODO: Fix the GetGroupPlayersTask
-
-
-        return rootView;
     }
 
-    private void refreshPlayers(){
+    private void refreshPlayers(final ArrayAdapter playersAdapter){
         // get players in this group
         MainActivity.playerService.getGroupPlayers(Constants.CURRENT_GROUP_ID)
                 .enqueue(new Callback<Result<List<Player>>>() {
@@ -156,7 +164,7 @@ public class GroupManagementFragment extends Fragment {
                                 getContext(),
                                 "Successfully updated player " + response.body().data.username,
                                 Toast.LENGTH_SHORT).show();
-                        refreshPlayers();
+                        refreshPlayers(playersAdapter);
                     }
 
                     @Override

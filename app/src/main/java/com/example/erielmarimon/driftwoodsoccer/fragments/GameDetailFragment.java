@@ -126,7 +126,7 @@ public class GameDetailFragment extends Fragment {
 
         // For player list view, get all the players in this game and load them up with an array
         // adapter
-        players = new ArrayList<>(Arrays.asList(Helper.createPlayerList(2)));
+        players = new ArrayList<>();
 
         playerAdapter = new ArrayAdapter<>(
                 getActivity(),
@@ -154,9 +154,9 @@ public class GameDetailFragment extends Fragment {
                 Toast.makeText(getContext(), "Click", Toast.LENGTH_LONG).show();
                 Log.v(LOG_TAG, "Click");
 
-                Player newPlayer = Helper.createPlayerList(1)[0];
-                players.add(newPlayer);
-                playerAdapter.notifyDataSetChanged();
+//                Player newPlayer = Helper.createPlayerList(1)[0];
+//                players.add(newPlayer);
+//                playerAdapter.notifyDataSetChanged();
             }
         });
 

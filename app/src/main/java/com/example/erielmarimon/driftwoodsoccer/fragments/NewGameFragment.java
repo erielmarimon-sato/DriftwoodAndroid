@@ -134,7 +134,7 @@ public class NewGameFragment extends Fragment {
 
         // For player list view, get all the players in this game and load them up with an array
         // adapter
-        players = new ArrayList<>(Arrays.asList(Helper.createPlayerList(2)));
+        players = new ArrayList<>();
 
 
         playerAdapter = new ArrayAdapter(
@@ -164,22 +164,19 @@ public class NewGameFragment extends Fragment {
                 Toast.makeText(getContext(), "Click", Toast.LENGTH_LONG).show();
                 Log.v(LOG_TAG, "Click");
 
-                Player newPlayer = Helper.createPlayerList(1)[0];
-                players.add(newPlayer);
-                playerAdapter.notifyDataSetChanged();
             }
         });
 
-        createGameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createGameIntent = new Intent(getContext(), GameListActivity.class);
-                Game newGame = Helper.createGameList(1)[0];
-                createGameIntent.putExtra(
-                        Constants.CustomIntentExtras.GAME_EXTRA, Helper.objectToJsonString(newGame));
-                startActivity(createGameIntent);
-            }
-        });
+//        createGameButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent createGameIntent = new Intent(getContext(), GameListActivity.class);
+//                Game newGame = Helper.createGameList(1)[0];
+//                createGameIntent.putExtra(
+//                        Constants.CustomIntentExtras.GAME_EXTRA, Helper.objectToJsonString(newGame));
+//                startActivity(createGameIntent);
+//            }
+//        });
         return rootView;
     }
 

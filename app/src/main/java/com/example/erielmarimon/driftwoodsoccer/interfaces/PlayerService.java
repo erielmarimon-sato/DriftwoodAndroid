@@ -18,8 +18,6 @@ import retrofit2.http.Query;
 
 
 public interface PlayerService {
-    String BASE_URL = "http://192.168.2.119:8081/CoreServices/";
-
 
     @GET("players/{id}")
     Call<Result<Player>> getPlayer(@Path("id") String id);
