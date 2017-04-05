@@ -1,30 +1,26 @@
 package com.example.erielmarimon.driftwoodsoccer.activities;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import com.example.erielmarimon.driftwoodsoccer.R;
-import com.example.erielmarimon.driftwoodsoccer.fragments.GroupManagementFragment;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
-import com.example.erielmarimon.driftwoodsoccer.tasks.SearchPlayersTask;
+import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -41,8 +37,6 @@ public class SearchableActivity extends ListActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-//        final EditText searchBox = (EditText) findViewById(R.id.sear)
         final ListView searchResultsListView = getListView();
         searchResultAdapter = new ArrayAdapter<>(
                 this,
@@ -55,9 +49,18 @@ public class SearchableActivity extends ListActivity {
             Log.v(LOG_TAG, "Perform search: " + query);
             setListAdapter(searchResultAdapter);
 
-            SearchPlayersTask searchPlayersTask = new SearchPlayersTask();
-            searchPlayersTask.execute(query, Boolean.TRUE.toString());
+            MainActivity.playerService.usernamePartialSearch(query, Boolean.TRUE).enqueue(new Callback<Result<List<Player>>>() {
+                @Override
+                public void onResponse(Call<Result<List<Player>>> call, Response<Result<List<Player>>> response) {
+                    searchResultAdapter.addAll(response.body().data);
+                }
 
+                @Override
+                public void onFailure(Call<Result<List<Player>>> call, Throwable t) {
+                    t.printStackTrace();
+                    Log.e(LOG_TAG, t.getLocalizedMessage());
+                }
+            });
         }
 
         searchResultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,15 +80,6 @@ public class SearchableActivity extends ListActivity {
                 startActivity(backToGroupManagementIntent);
             }
         });
-
-    }
-
-
-
-    @Override
-    public boolean onSearchRequested() {
-        Log.v(LOG_TAG, "onSearchRequested");
-        return super.onSearchRequested();
 
     }
 }

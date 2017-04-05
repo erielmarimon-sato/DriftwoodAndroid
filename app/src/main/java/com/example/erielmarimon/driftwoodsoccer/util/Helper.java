@@ -92,25 +92,25 @@ public class Helper {
         Integer noShow = 0;
         Integer totalGames = 0;
         Integer effectiveness = 0;
-        Date playingSince = new Date();
-        Date lastDayPlayed = new Date();
+        String playingSince = new Date().toString();
+        String lastDayPlayed = new Date().toString();
         boolean active = true;
 
         for(int i = 0; i < players.length; i++){
             Player newPlayer = new Player();
 
-            newPlayer.set_id(id+i);
-            newPlayer.setName(name + i);
-            newPlayer.setUsername(username+i);
-            newPlayer.setPassword(password+i);
-            newPlayer.setTotalGoals(totalGoals);
-            newPlayer.setTotalAssists(totalAssists);
-            newPlayer.setNoShow(noShow);
-            newPlayer.setTotalGames(totalGames);
-            newPlayer.setEffectiveness(effectiveness);
-            newPlayer.setPlayingSince(playingSince);
-            newPlayer.setLastDayPlayed(lastDayPlayed);
-            newPlayer.setActive(active);
+            newPlayer.id = (id+i);
+            newPlayer.name = (name + i);
+            newPlayer.username = (username+i);
+            newPlayer.password = (password+i);
+            newPlayer.totalGoals = (totalGoals);
+            newPlayer.totalAssists = (totalAssists);
+            newPlayer.noShow = (noShow);
+            newPlayer.totalGames = (totalGames);
+            newPlayer.effectiveness = (effectiveness);
+            newPlayer.playingSince = (playingSince);
+            newPlayer.lastDayPlayed = (lastDayPlayed);
+            newPlayer.active = (active);
 
             players[i] = newPlayer;
         }
