@@ -13,6 +13,7 @@ import java.util.List;
 public class Game {
     public String id;
     public String date;
+    public String time;
     public List<String> teamOne;
     public List<String> teamTwo;
     public List<String> players;

@@ -1,7 +1,11 @@
 package com.example.erielmarimon.driftwoodsoccer.util;
 
+import android.content.SharedPreferences;
+
+import com.example.erielmarimon.driftwoodsoccer.activities.MainActivity;
 import com.example.erielmarimon.driftwoodsoccer.models.Game;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
+import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -12,6 +16,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Eriel.Marimon on 3/22/17.
@@ -31,6 +39,23 @@ import java.util.List;
 //private boolean active;
 
 public class Helper {
+
+    public static void initTestPlayer(final SharedPreferences.Editor globalSharedPrefEditor){
+        MainActivity.playerService.getPlayer("58d84cbbfcec77b0c5323d2c").enqueue(new Callback<Result<Player>>() {
+            @Override
+            public void onResponse(Call<Result<Player>> call, Response<Result<Player>> response) {
+                Player player = response.body().data;
+                globalSharedPrefEditor.putString(
+                        Constants.CustomIntentExtras.CURRENT_LOGGED_PLAYER,
+                        Helper.objectToJsonString(player));
+            }
+
+            @Override
+            public void onFailure(Call<Result<Player>> call, Throwable t) {
+
+            }
+        });
+    }
 
     public static Game jsonStringToGame(String jsonString){
         ObjectMapper objectMapper = new ObjectMapper();

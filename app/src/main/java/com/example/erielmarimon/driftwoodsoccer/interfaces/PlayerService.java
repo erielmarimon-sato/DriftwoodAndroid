@@ -29,7 +29,9 @@ public interface PlayerService {
     Call<Result<List<Player>>> usernamePartialSearch(@Query("username") String username,
                                                      @Query("active") boolean active);
 
-    // this should actiualluy be a PATCH, fix the backend!!
+
+
+    // this should actualluy be a PATCH, fix the backend!!
     @PUT("players")
     Call<Result<Player>> updatePlayerGroup(@Query("id") String playerId,
                                            @Query("groupId") String groupId);

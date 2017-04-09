@@ -22,6 +22,9 @@
             android:name=".activities.NewGameActivity"
             android:label="@string/new_game_activity_label"
             android:parentActivityName=".activities.MainActivity" />
+            <meta-data
+                android:name="android.app.default_searchable"
+                android:value=".activities.SearchableActivity"/>
         <activity
             android:name=".activities.PlayerDetailActivity"
             android:label="@string/player_activity_label"
@@ -35,8 +38,12 @@
             android:label="@string/game_details_activity_label"
             android:parentActivityName=".activities.GameListActivity" />
 
-        <activity android:name=".activities.GroupManagementActivity">
-            <meta-data android:name="android.app.default_searchable"
+        <activity
+            android:name=".activities.GroupManagementActivity"
+            android:label="@string/group_management_activity_label"
+            android:parentActivityName=".activities.MainActivity">
+            <meta-data
+                android:name="android.app.default_searchable"
                 android:value=".activities.SearchableActivity"/>
         </activity>
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.fragments.MainActivityFragment;
 import com.example.erielmarimon.driftwoodsoccer.interfaces.GameService;
+import com.example.erielmarimon.driftwoodsoccer.interfaces.GroupService;
 import com.example.erielmarimon.driftwoodsoccer.interfaces.PlayerService;
 import com.example.erielmarimon.driftwoodsoccer.util.ApiHandler;
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static PlayerService playerService;
     public static GameService gameService;
+    public static GroupService groupService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         // init services
         playerService = ApiHandler.createPlayerServiceApi();
         gameService = ApiHandler.createGameServiceApi();
+        groupService = ApiHandler.createGroupServiceApi();
 
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()

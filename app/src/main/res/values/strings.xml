@@ -21,4 +21,6 @@
     <string name="search_cancel_button_title">Cancel</string>
     <string name="username_search_hint">username</string>
     <string name="search_hint">Username</string>
+    <string name="group_management_activity_label">Group Management</string>
+    <string name="app_global_preferences">DriftwoodGlobalPreferences</string>
 </resources>

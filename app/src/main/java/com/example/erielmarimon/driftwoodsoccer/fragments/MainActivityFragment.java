@@ -1,7 +1,9 @@
 package com.example.erielmarimon.driftwoodsoccer.fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +16,8 @@ import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameListActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.GroupManagementActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.NewGameActivity;
+import com.example.erielmarimon.driftwoodsoccer.models.Player;
+import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,18 +26,29 @@ public class MainActivityFragment extends Fragment {
 
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private SharedPreferences globalSharedPref;
+    private SharedPreferences.Editor globalSharedPrefEditor;
+
     private Button newGameButton;
     private Button gameListButton;
     private Button groupManagementButton;
 
+    public static Player testPlayer;
+
     public MainActivityFragment() {
         // Required empty public constructor
+        testPlayer = null;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        globalSharedPref = getActivity().getSharedPreferences(
+                getString(R.string.app_global_preferences), Context.MODE_PRIVATE);
+        globalSharedPrefEditor = globalSharedPref.edit();
+
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
 

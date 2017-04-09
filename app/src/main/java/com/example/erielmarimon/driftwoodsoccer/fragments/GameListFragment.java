@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameDetailActivity;
@@ -23,6 +24,7 @@ import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
+import java.io.IOException;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,11 +61,12 @@ public class GameListFragment extends Fragment {
 
         AdapterView.OnItemClickListener adapterOnItemClickListener = createOnItemClickListener();
 
-        Intent intent = getActivity().getIntent();
-        handleIntent(intent);
 
         gameListAdapter = new ArrayAdapter(
                 getContext(), R.layout.list_item_game, R.id.list_item_game_textview, games);
+
+        Intent intent = getActivity().getIntent();
+        handleIntent(intent); // This line should always be after initialization of gameListAdapter
 
         gameListView = (ListView) rootView.findViewById(R.id.game_list_view);
         gameListView.setAdapter(gameListAdapter);
@@ -82,7 +85,8 @@ public class GameListFragment extends Fragment {
                     case R.id.game_list_view:
                         Intent gameDetailIntent = new Intent(getContext(), GameDetailActivity.class);
                         gameDetailIntent.putExtra(
-                                Intent.EXTRA_TEXT, Helper.objectToJsonString(games.get(position)));
+                                Constants.CustomIntentExtras.GAME_EXTRA,
+                                Helper.objectToJsonString(games.get(position)));
                         startActivity(gameDetailIntent);
                         break;
 
@@ -101,7 +105,10 @@ public class GameListFragment extends Fragment {
                     case Constants.CustomIntentExtras.ACTION_CREATE_GAME:
                         Game game = Helper.jsonStringToGame(
                                 intent.getStringExtra(Constants.CustomIntentExtras.GAME_EXTRA));
-                        games.add(game);
+                        games.add(game); // add to games for record keeping
+
+                        saveGame(game); // saves game to database and then show it on UI
+
                         break;
 
                     default:
@@ -109,6 +116,27 @@ public class GameListFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void saveGame(Game game) {
+        MainActivity.gameService.createGame(game.players, game.gameType, game.date, game.time)
+                .enqueue(new Callback<Result<Game>>() {
+                    @Override
+                    public void onResponse(Call<Result<Game>> call, Response<Result<Game>> response) {
+                        if(response.isSuccessful()){
+                            Game newGame = response.body().data;
+                            gameListAdapter.add(newGame);
+                        }else{
+                            Toast.makeText(getContext(), "Failed to create game", Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Result<Game>> call, Throwable t) {
+
+                    }
+                });
     }
 
     private void refreshGames(final ArrayAdapter gameListAdapter){

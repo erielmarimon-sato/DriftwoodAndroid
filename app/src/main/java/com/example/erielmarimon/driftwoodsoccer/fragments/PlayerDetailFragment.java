@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
+import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
 
 /**
@@ -33,7 +34,7 @@ public class PlayerDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_player_detail, container, false);
 
         Intent playerDetailIntent = getActivity().getIntent();
-        String playerJsonString = playerDetailIntent.getStringExtra(Intent.EXTRA_TEXT);
+        String playerJsonString = playerDetailIntent.getStringExtra(Constants.CustomIntentExtras.PLAYER_EXTRA);
         Player thisPlayer = Helper.jsonStringToPlayer(playerJsonString);
 
         TextView tv = (TextView) rootView.findViewById(R.id.text_view_1);

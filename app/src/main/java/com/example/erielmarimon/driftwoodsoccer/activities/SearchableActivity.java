@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
 import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
@@ -37,6 +38,8 @@ public class SearchableActivity extends ListActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        AdapterView.OnItemClickListener adapterOnItemClickListener = createOnItemClickListener();
+
         final ListView searchResultsListView = getListView();
         searchResultAdapter = new ArrayAdapter<>(
                 this,
@@ -45,25 +48,38 @@ public class SearchableActivity extends ListActivity {
         Intent searchIntent = getIntent();
         if (Intent.ACTION_SEARCH.equals(searchIntent.getAction())){
             String query = searchIntent.getStringExtra(SearchManager.QUERY);
-            // TODO: Perform search
-            Log.v(LOG_TAG, "Perform search: " + query);
+
             setListAdapter(searchResultAdapter);
 
-            MainActivity.playerService.usernamePartialSearch(query, Boolean.TRUE).enqueue(new Callback<Result<List<Player>>>() {
-                @Override
-                public void onResponse(Call<Result<List<Player>>> call, Response<Result<List<Player>>> response) {
-                    searchResultAdapter.addAll(response.body().data);
-                }
-
-                @Override
-                public void onFailure(Call<Result<List<Player>>> call, Throwable t) {
-                    t.printStackTrace();
-                    Log.e(LOG_TAG, t.getLocalizedMessage());
-                }
-            });
+            MainActivity.playerService.usernamePartialSearch(query, Boolean.TRUE).enqueue(onHttpResult());
         }
 
-        searchResultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        searchResultsListView.setOnItemClickListener(adapterOnItemClickListener);
+
+    }
+
+
+    // ==========================================================================================
+    // ===================================== HELPER METHODS =====================================
+    // ==========================================================================================
+    private Callback<Result<List<Player>>> onHttpResult() {
+        return new Callback<Result<List<Player>>>() {
+            @Override
+            public void onResponse(Call<Result<List<Player>>> call, Response<Result<List<Player>>> response) {
+                searchResultAdapter.addAll(response.body().data);
+            }
+
+            @Override
+            public void onFailure(Call<Result<List<Player>>> call, Throwable t) {
+                t.printStackTrace();
+                Log.e(LOG_TAG, t.getLocalizedMessage());
+            }
+        };
+    }
+
+
+    private AdapterView.OnItemClickListener createOnItemClickListener(){
+        return new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -79,7 +95,6 @@ public class SearchableActivity extends ListActivity {
 
                 startActivity(backToGroupManagementIntent);
             }
-        });
-
+        };
     }
 }

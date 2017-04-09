@@ -1,6 +1,7 @@
 package com.example.erielmarimon.driftwoodsoccer.util;
 
 import com.example.erielmarimon.driftwoodsoccer.interfaces.GameService;
+import com.example.erielmarimon.driftwoodsoccer.interfaces.GroupService;
 import com.example.erielmarimon.driftwoodsoccer.interfaces.PlayerService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,33 +17,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiHandler {
 
+    static Gson gson = new GsonBuilder()
+            .setDateFormat(DateFormat.DEFAULT)
+            .serializeNulls()
+            .setPrettyPrinting()
+            .create();
+
+    static Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(Constants.DriftwoodDb.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build();
+
     public static PlayerService createPlayerServiceApi() {
-        Gson gson = new GsonBuilder()
-                .setDateFormat(DateFormat.DEFAULT)
-                .serializeNulls()
-                .setPrettyPrinting()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.DriftwoodDb.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
         return retrofit.create(PlayerService.class);
     }
 
     public static GameService createGameServiceApi() {
-        Gson gson = new GsonBuilder()
-                .setDateFormat(DateFormat.DEFAULT)
-                .serializeNulls()
-                .setPrettyPrinting()
-                .create();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.DriftwoodDb.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
         return retrofit.create(GameService.class);
+    }
+
+    public static GroupService createGroupServiceApi() {
+        return retrofit.create(GroupService.class);
     }
 }

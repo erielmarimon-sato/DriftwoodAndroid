@@ -6,11 +6,11 @@ package com.example.erielmarimon.driftwoodsoccer.util;
 
 public class Constants {
 
-    public static String CURRENT_GROUP_ID = "58e0443877c8194d1839fc13";
+    public static String CURRENT_GROUP_ID = "58e045ad77c80173b50bb073";
 
     public static class DriftwoodDb{
-        public static final String BASE_URL = "http://192.168.2.119:8081/CoreServices/";
-//        public static final String BASE_URL = "http://192.168.1.12:8081/CoreServices/";
+//        public static final String BASE_URL = "http://192.168.2.119:8081/CoreServices/";
+        public static final String BASE_URL = "http://192.168.1.12:8081/CoreServices/";
 
         public static final String PLAYERS_END_POINT = "/players";
         public static final String GROUPS_END_POINT = "/groups";
@@ -42,5 +42,6 @@ public class Constants {
 
         public static final String GAME_EXTRA = "driftwood_game_extra";
         public static final String PLAYER_EXTRA = "driftwood_player_extra";
+        public static final String CURRENT_LOGGED_PLAYER = "driftwood_current_logged_player_extra";
     }
 }

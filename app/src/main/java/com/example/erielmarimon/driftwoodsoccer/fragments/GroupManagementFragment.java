@@ -17,11 +17,14 @@ import android.widget.Toast;
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.MainActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.PlayerDetailActivity;
+import com.example.erielmarimon.driftwoodsoccer.models.Group;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
 import com.example.erielmarimon.driftwoodsoccer.models.net.Result;
 import com.example.erielmarimon.driftwoodsoccer.util.Constants;
 import com.example.erielmarimon.driftwoodsoccer.util.Helper;
+import com.example.erielmarimon.driftwoodsoccer.util.StringFormatter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,23 +159,63 @@ public class GroupManagementFragment extends Fragment {
 
     private void updatePlayerInfo(Player player){
         // TODO: This should be a shared preference
-        MainActivity.playerService.updatePlayerGroup(player.id, Constants.CURRENT_GROUP_ID).enqueue(
-                new Callback<Result<Player>>() {
-                    @Override
-                    public void onResponse(Call<Result<Player>> call, Response<Result<Player>> response) {
-                        Toast.makeText(
-                                getContext(),
-                                "Successfully updated player " + response.body().data.username,
-                                Toast.LENGTH_SHORT).show();
-                        refreshPlayers(playersAdapter);
-                    }
+        MainActivity.playerService.updatePlayerGroup(
+                player.id, Constants.CURRENT_GROUP_ID).enqueue(onUpdatePlayerResult());
 
-                    @Override
-                    public void onFailure(Call<Result<Player>> call, Throwable t) {
-
-                    }
-                }
-        );
     }
 
+    private Callback<Result<Player>> onUpdatePlayerResult(){
+        return new Callback<Result<Player>>() {
+            @Override
+            public void onResponse(Call<Result<Player>> call, Response<Result<Player>> response) {
+
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                            getContext(),
+                            "Successfully updated player " + response.body().data.username,
+                            Toast.LENGTH_SHORT).show();
+
+                    // TODO: Update group as well when player has been confirmed
+                    Player player = response.body().data;
+                    List<String> playerIds = new ArrayList<>();
+                    playerIds.add(player.id);
+                    MainActivity.groupService.addPlayer(
+                            Constants.CURRENT_GROUP_ID, playerIds).enqueue(onUpdateGroupResult());
+
+                    refreshPlayers(playersAdapter);
+                }else {
+                    Log.e(LOG_TAG, "Failed to update player. Raw response = " + response.raw());
+                }
+            }
+            @Override
+            public void onFailure(Call<Result<Player>> call, Throwable t) {
+                Log.e(LOG_TAG, "Failed to update player. Throwable message = " + t.getMessage());
+            }
+        };
+    }
+
+    private Callback<Result<Group>> onUpdateGroupResult() {
+        return new Callback<Result<Group>>() {
+            @Override
+            public void onResponse(Call<Result<Group>> call, Response<Result<Group>> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                            getContext(),
+                            "Successfully updated group ",
+                            Toast.LENGTH_SHORT).show();
+                }else {
+                    try {
+                        Log.e(LOG_TAG, response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Log.e(LOG_TAG, "Failed to update group. Raw response = " + response.raw());
+                }
+            }
+            @Override
+            public void onFailure(Call<Result<Group>> call, Throwable t) {
+                Log.e(LOG_TAG, "Failed to update group. Throwable message = " + t.getMessage());
+            }
+        };
+    }
 }
