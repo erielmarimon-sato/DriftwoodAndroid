@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.erielmarimon.driftwoodsoccer.R;
 import com.example.erielmarimon.driftwoodsoccer.activities.GameListActivity;
+import com.example.erielmarimon.driftwoodsoccer.activities.MainActivity;
 import com.example.erielmarimon.driftwoodsoccer.activities.PlayerDetailActivity;
 import com.example.erielmarimon.driftwoodsoccer.models.Game;
 import com.example.erielmarimon.driftwoodsoccer.models.Player;
@@ -49,6 +50,7 @@ public class NewGameFragment extends Fragment {
     private final String LOG_TAG = getClass().getName();
 
     private SharedPreferences globalSharedPref ;
+    private SharedPreferences.Editor globalSharedPrefEditor ;
 
     private Game newGame;
     private ArrayAdapter playerAdapter;
@@ -73,10 +75,12 @@ public class NewGameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         // This points to a file created in main activity
         globalSharedPref = getActivity()
                 .getSharedPreferences(
                         getString(R.string.app_global_preferences), Context.MODE_PRIVATE);
+        globalSharedPrefEditor = globalSharedPref.edit();
 
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_new_game, container, false);
@@ -107,7 +111,36 @@ public class NewGameFragment extends Fragment {
         createGameButton = (Button) rootView.findViewById(R.id.game_create_button);
         createGameButton.setOnClickListener(onClickListener);
 
+        Intent intent = getActivity().getIntent();
+        handleIntent(intent);
+
         return rootView;
+    }
+
+    private void handleIntent(Intent intent){
+        if(intent != null){
+            String action = intent.getStringExtra(Constants.CustomIntentExtras.HEADER_ACTION);
+            if(action != null){
+                switch (action){
+                    case Constants.CustomIntentExtras.ACTION_ADD_PLAYER_TO_GAME:
+                        Log.v(LOG_TAG, "adding player to playersAdapter.");
+                        Player player = Helper.jsonStringToPlayer(
+                                intent.getStringExtra(Constants.CustomIntentExtras.PLAYER_EXTRA));
+
+                        players.add(player); // TODO: Why is this also updating the adapter?
+//                        playerAdapter.add(player);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    private void addPlayerToGame(Player player){
+//        MainActivity.gameService.addPlayerToGame()
+//        players.add(player);
+//        playerAdapter.add(player);
     }
 
     private Player getCurrentPlayer(SharedPreferences globalSharedPref) {
@@ -162,7 +195,11 @@ public class NewGameFragment extends Fragment {
 
                     case R.id.player_add_button:
                         // TODO: Add player to this game
-//                        getActivity().onSearchRequested();
+                        globalSharedPrefEditor.putString(
+                                Constants.Search.SEARCH_ACTIVITY_SOURCE_KEY,
+                                Constants.Search.SOURCE_ACTIVITY_NEW_GAME_FRAGMENT);
+                        globalSharedPrefEditor.commit();
+                        getActivity().onSearchRequested();
                         break;
 
                     case R.id.date_edit_text:

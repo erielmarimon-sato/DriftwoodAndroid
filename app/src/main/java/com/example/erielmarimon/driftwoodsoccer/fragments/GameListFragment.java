@@ -65,14 +65,14 @@ public class GameListFragment extends Fragment {
         gameListAdapter = new ArrayAdapter(
                 getContext(), R.layout.list_item_game, R.id.list_item_game_textview, games);
 
-        Intent intent = getActivity().getIntent();
-        handleIntent(intent); // This line should always be after initialization of gameListAdapter
-
         gameListView = (ListView) rootView.findViewById(R.id.game_list_view);
         gameListView.setAdapter(gameListAdapter);
         gameListView.setOnItemClickListener(adapterOnItemClickListener);
 
         refreshGames(gameListAdapter);
+
+        Intent intent = getActivity().getIntent();
+        handleIntent(intent);
 
         return rootView;
     }
@@ -119,6 +119,7 @@ public class GameListFragment extends Fragment {
     }
 
     private void saveGame(Game game) {
+        Log.v(LOG_TAG, "saving...");
         MainActivity.gameService.createGame(game.players, game.gameType, game.date, game.time)
                 .enqueue(new Callback<Result<Game>>() {
                     @Override
@@ -126,9 +127,11 @@ public class GameListFragment extends Fragment {
                         if(response.isSuccessful()){
                             Game newGame = response.body().data;
                             gameListAdapter.add(newGame);
+                            Log.w(LOG_TAG, response.raw().toString());
                         }else{
                             Toast.makeText(getContext(), "Failed to create game", Toast.LENGTH_LONG)
                                     .show();
+                            Log.e(LOG_TAG, response.raw().toString());
                         }
                     }
 

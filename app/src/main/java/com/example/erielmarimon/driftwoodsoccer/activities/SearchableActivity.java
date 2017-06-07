@@ -2,7 +2,9 @@ package com.example.erielmarimon.driftwoodsoccer.activities;
 
 import android.app.ListActivity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -24,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+
 /**
  * Created by Eriel.Marimon on 3/31/17.
  */
@@ -32,11 +35,16 @@ public class SearchableActivity extends ListActivity {
 
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private SharedPreferences globalSharedPref ;
+
     public static ArrayAdapter<Player> searchResultAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        globalSharedPref = getSharedPreferences(
+                        getString(R.string.app_global_preferences), Context.MODE_PRIVATE);
 
         AdapterView.OnItemClickListener adapterOnItemClickListener = createOnItemClickListener();
 
@@ -58,6 +66,11 @@ public class SearchableActivity extends ListActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 
     // ==========================================================================================
     // ===================================== HELPER METHODS =====================================
@@ -83,17 +96,33 @@ public class SearchableActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent backToGroupManagementIntent = new Intent(getApplicationContext(),
-                        GroupManagementActivity.class);
+                String searchSource = globalSharedPref.getString(
+                        Constants.Search.SEARCH_ACTIVITY_SOURCE_KEY,
+                        "");
 
-                backToGroupManagementIntent.putExtra(Constants.CustomIntentExtras.HEADER_ACTION,
-                        Constants.CustomIntentExtras.ACTION_ADD_PLAYER_TO_GROUP);
+                Intent backToSourceActivityIntent = null;
 
-                backToGroupManagementIntent.putExtra(
+                if(searchSource.equals(Constants.Search.SOURCE_ACTIVITY_GROUP_MANAGEMENT_FRAGMENT)){
+                    backToSourceActivityIntent = new Intent(getApplicationContext(),
+                            GroupManagementActivity.class);
+
+                    backToSourceActivityIntent.putExtra(Constants.CustomIntentExtras.HEADER_ACTION,
+                            Constants.CustomIntentExtras.ACTION_ADD_PLAYER_TO_GROUP);
+                }else if(searchSource.equals(Constants.Search.SOURCE_ACTIVITY_NEW_GAME_FRAGMENT)){
+                    backToSourceActivityIntent = new Intent(getApplicationContext(),
+                            NewGameActivity.class);
+
+                    backToSourceActivityIntent.putExtra(Constants.CustomIntentExtras.HEADER_ACTION,
+                            Constants.CustomIntentExtras.ACTION_ADD_PLAYER_TO_GAME);
+                }
+
+                backToSourceActivityIntent.putExtra(
                         Constants.CustomIntentExtras.PLAYER_EXTRA,
                         Helper.objectToJsonString(searchResultAdapter.getItem(position)));
 
-                startActivity(backToGroupManagementIntent);
+
+                startActivity(backToSourceActivityIntent);
+
             }
         };
     }

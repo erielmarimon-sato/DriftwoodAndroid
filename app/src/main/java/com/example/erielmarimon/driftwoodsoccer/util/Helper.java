@@ -48,6 +48,7 @@ public class Helper {
                 globalSharedPrefEditor.putString(
                         Constants.CustomIntentExtras.CURRENT_LOGGED_PLAYER,
                         Helper.objectToJsonString(player));
+                globalSharedPrefEditor.commit();
             }
 
             @Override
